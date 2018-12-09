@@ -13,6 +13,22 @@ const User = require('../models/users');
 
 
 
+/*
+ *  @TODO you can use below to create a more complex Queries
+ *  eq  Equal
+ *  ne  Eot Equal
+ *  gt  Greater Than
+ *  gte Greater Than or Equal
+ *  ls  Less Than
+ *  lte Less Than or Equal
+ *  in  Contain
+ *  nin Not in
+ *  //  Example:
+ *  .find({ age: { $gte: 18, $lt: 40 } })  Means that the age should be >= 18 AND less than 40
+ *  .find({ age: { $in: [18, 19, 20] } })  Means that the age should equal one of the array items
+ *
+ */
+
 // Getting all users
 router.get('/', (req, res) => {
   User.find({ name:'Hamdon', age: 24}) // This is means WHERE NAME == Hamdon && AGE == 24
