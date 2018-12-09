@@ -8,6 +8,9 @@
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
+const mongoose = require('mongoose');
+const User = require('../models/users');
+
 
 // Dummy Data just for testing
 let users = [
@@ -35,12 +38,22 @@ router.post('/', (req, res) => {
   if(validating.error){
     res.status(400).send(validating.error.details);
   }else {
-    let newUser = {
-      'id': users.length + 1,
-      'name': req.body.name,
-      'cool': req.body.cool == 'true'
-    };
-    users.push(newUser);
+
+    const user = new User({
+      _id: new mongoose.Types.ObjectId(),
+      name: req.body.name,
+      age: req.body.age
+    });
+
+    user.save()
+    .then(result => {
+      console.log(result);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+
     res.send('Done');
   }
 });
@@ -75,7 +88,7 @@ router.put('/:id', (req, res) => {
 function userValidating(user) {
   const userSchema = {
     'name': Joi.string().min(3).required(),
-    'cool': Joi.boolean().required()
+    'age': Joi.number().required()
   }
   return Joi.validate(user, userSchema);
 }

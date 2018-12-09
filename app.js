@@ -12,11 +12,11 @@ const usersRoutes = require('./routes/user');
 const mongoose = require('mongoose');
 
 //  Starting MongoDB connection
-mongoose.connect('mongodb://admin:admin1234@ds127624.mlab.com:27624/camp');
+mongoose.connect('mongodb://admin:admin1234@ds127624.mlab.com:27624/camp', { useNewUrlParser: true });
 
 //  To Check if the connection works fine or not
 mongoose.connection.on('connected', () => {
-  console.log('\x1b[46m', 'mongo has been connected...');
+  console.log('\x1b[36m%s\x1b[0m', 'mongo has been connected...');
 });
 
 
@@ -27,18 +27,18 @@ app.use(hello);
 // For serving images and other static data
 app.use(express.static('public'));
 // Custom MiddleWare
-app.use((req, res, next) => {
-  try {
-    let payload = jwt.verify(req.body.token, 'secret123');
-    res.send(payload);
-  } catch (err) {
-    res.status(400).send('invalid token');
-  }
-  res.send(v);
-  next();
-});
+// app.use((req, res, next) => {
+//   try {
+//     let payload = jwt.verify(req.body.token, 'secret123');
+//     res.send(payload);
+//   } catch (err) {
+//     res.status(400).send('invalid token');
+//   }
+//   res.send(v);
+//   next();
+// });
 
-// Route MiddleWare
+// Route MiddleWare for any route that start with (/api/user)
 app.use('/api/user', usersRoutes);
 
 // Home Router
