@@ -1,3 +1,12 @@
+/*
+ * File that handel the posts routes
+ */
+
+ /*
+  * @TODO this file is not finished
+  *
+  */
+
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
