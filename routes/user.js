@@ -21,12 +21,14 @@ let users = [
 
 // Getting information
 router.get('/:id', (req, res) => {
-  let user = users.find(item => item.id === parseInt(req.params.id));
-  if(user){
-    res.send(user);
-  }else {
-    res.status(404).send('User not found');
-  }
+  User.findById(req.params.id).then(result => {
+    if(!result){
+      res.status(404).send('There is no such user');
+    }
+    res.send(result);
+  }).catch(err => {
+    res.status(400).send(err.message)
+  });
 });
 
 
@@ -82,6 +84,15 @@ router.put('/:id', (req, res) => {
     res.status(404).send('user not found');
   }
 });
+
+router.delete('/:id', (req, res) => {
+  User.remove({_id: req.params.id}).then(result => {
+    res.send(result)
+  }).catch(err => {
+    res.status(404).send(err);
+  });
+});
+
 
 
 //  To validate the POST PUT requestes
