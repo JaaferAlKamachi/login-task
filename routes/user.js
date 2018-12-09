@@ -12,16 +12,14 @@ const mongoose = require('mongoose');
 const User = require('../models/users');
 
 
-// Dummy Data just for testing
-let users = [
-  {'id': 1 , 'name': 'Hamandi', 'cool': false},
-  {'id': 2 , 'name': 'Hamdon', 'cool': true},
-];
-
 
 // Getting all users
 router.get('/', (req, res) => {
-  User.find().then(result => {
+  User.find({ name:'Hamdon', age: 24}) // This is means WHERE NAME == Hamdon && AGE == 24
+  .limit(10)  //  This for setting a limit to the requesr
+  .sort({ name: 1 })  //  Sorting according the name 1 mean asc -1 means desc
+  .select({ name: 1, age: 24 }) //  Means that get me the name and age only
+  .then(result => {
     res.send(result);
   }).catch(err => {
     res.status(400).send(err)
@@ -72,11 +70,10 @@ router.put('/:id', (req, res) => {
   if(validating.error){
     res.status(400).send(validating.error.details);
   }else {
-    User.update({_id: req.params.id},
-       { $set:{name: req.body.name, age: req.body.age}}
-     )
+    //  You can use updateMany
+    User.updateOne( { _id: req.params.id },{ $set:req.body } )
     .then(result => {
-      res.send(`Number of updated users is ${result.n}`);
+      res.send(`Number of updated users is ${ result.n }`);
     }).catch(err => {
       res.status(400).send(err);
     });
@@ -86,7 +83,7 @@ router.put('/:id', (req, res) => {
 
 // Deleting a user
 router.delete('/:id', (req, res) => {
-  User.remove({_id: req.params.id}).then(result => {
+  User.remove({name: req.params.id}).then(result => {
     res.send(`Number of deleted users is ${result.n}`)
   }).catch(err => {
     res.status(400).send(err);
@@ -99,7 +96,7 @@ router.delete('/:id', (req, res) => {
 function userValidating(user) {
   const userSchema = {
     'name': Joi.string().min(3).required(),
-    'age': Joi.number().required()
+    'age': Joi.number()
   }
   return Joi.validate(user, userSchema);
 }
