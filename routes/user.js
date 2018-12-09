@@ -19,6 +19,15 @@ let users = [
 ];
 
 
+// Getting all users
+router.get('/', (req, res) => {
+  User.find().then(result => {
+    res.send(result);
+  }).catch(err => {
+    res.status(400).send(err)
+  })
+})
+
 // Getting information
 router.get('/:id', (req, res) => {
   User.findById(req.params.id).then(result => {
@@ -36,17 +45,14 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   // Setting Schema so i can validate it
   const validating = userValidating(req.body);
-
   if(validating.error){
     res.status(400).send(validating.error.details);
   }else {
-
     const user = new User({
       _id: new mongoose.Types.ObjectId(),
       name: req.body.name,
       age: req.body.age
     });
-
     user.save()
     .then(result => {
       console.log(result);
@@ -54,42 +60,36 @@ router.post('/', (req, res) => {
     .catch(err => {
       console.log(err);
     });
-
-
-    res.send('Done');
   }
 });
 
 
 // PUT
 router.put('/:id', (req, res) => {
-  // Check if the user exist
-  let user = users.find(item => item.id === parseInt(req.params.id));
-  if(user){
-    const validating = userValidating(req.body);
-    //  If the validation fails
-    if(validating.error){
-      res.status(400).send(validating.error.details);
-    }else {
-      //  If the validation success
-        let newUser = {
-        'id': user.id,
-        'name': req.body.name,
-        'cool': req.body.cool == 'true'
-      };
-      users[users.indexOf(user)] = newUser;
-      res.send(users);
-    }
-  }else{
-    res.status(404).send('user not found');
+  // If req.body is valid
+  const validating = userValidating(req.body);
+  //  If the validation fails
+  if(validating.error){
+    res.status(400).send(validating.error.details);
+  }else {
+    User.update({_id: req.params.id},
+       { $set:{name: req.body.name, age: req.body.age}}
+     )
+    .then(result => {
+      res.send(`Number of updated users is ${result.n}`);
+    }).catch(err => {
+      res.status(400).send(err);
+    });
   }
 });
 
+
+// Deleting a user
 router.delete('/:id', (req, res) => {
   User.remove({_id: req.params.id}).then(result => {
-    res.send(result)
+    res.send(`Number of deleted users is ${result.n}`)
   }).catch(err => {
-    res.status(404).send(err);
+    res.status(400).send(err);
   });
 });
 
