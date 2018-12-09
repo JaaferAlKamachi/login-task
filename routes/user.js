@@ -26,6 +26,18 @@ const User = require('../models/users');
  *  //  Example:
  *  .find({ age: { $gte: 18, $lt: 40 } })  Means that the age should be >= 18 AND less than 40
  *  .find({ age: { $in: [18, 19, 20] } })  Means that the age should equal one of the array items
+ *  // Adding OR operator
+ *  Keep the find() emplty just like that then write your or operator, just like below
+ *  .find().or([ { age: { $gte: 18 } }, { name: 'Hamdon' } ])
+ *  //
+ *
+ *  @TODO
+ *  You Can Set a Pagination Like This:
+ *
+ *  const pageNumber = 1;
+ *  const pageSize = 10;
+ *  .skip((pageNumber - 1) * pageSize)
+ *
  *
  */
 
