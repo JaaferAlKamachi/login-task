@@ -19,25 +19,12 @@ mongoose.connection.on('connected', () => {
   console.log('\x1b[36m%s\x1b[0m', 'mongo has been connected...');
 });
 
-
 // MiddleWare
 app.use(express.json());
 // Custom MiddleWare thats do nothing just to made the MiddleWare clear
 app.use(hello);
 // For serving images and other static data
 app.use(express.static('public'));
-// Custom MiddleWare
-// app.use((req, res, next) => {
-//   try {
-//     let payload = jwt.verify(req.body.token, 'secret123');
-//     res.send(payload);
-//   } catch (err) {
-//     res.status(400).send('invalid token');
-//   }
-//   res.send(v);
-//   next();
-// });
-
 // Route MiddleWare for any route that start with (/api/user)
 app.use('/api/user', usersRoutes);
 
