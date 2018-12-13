@@ -20,8 +20,17 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  name: { type: String, required: true, minlength: 5, maxlength: 50 },
-  age: Number
+  age: {
+    type: Number,
+    required: [true, 'Age Is Required']
+  },
+  name: {
+    type: String,
+    required: function () {
+      return this.age > 3 ; //  Hamdon has lost a 5000 IQD
+    }
+  },
+
 });
 
 module.exports = mongoose.model('User', userSchema);

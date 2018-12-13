@@ -43,10 +43,11 @@ const User = require('../models/users');
 
 // Getting all users
 router.get('/', (req, res) => {
-  User.find({ name:'Hamdon', age: 24}) // This is means WHERE NAME == Hamdon && AGE == 24
+  User.find() // This is means WHERE NAME == Hamdon && AGE == 24
+  .or([{ name:'husam' }, { age: { $lt: 30 } }])
   .limit(10)  //  This for setting a limit to the requesr
-  .sort({ name: 1 })  //  Sorting according the name 1 mean asc -1 means desc
-  .select({ name: 1, age: 24 }) //  Means that get me the name and age only
+  .sort({ name: -1})  //  Sorting according the name 1 mean asc -1 means desc
+  .select({name: 1, age: 1}) //  Means that get me the name and age only
   .then(result => {
     res.send(result);
   }).catch(err => {
@@ -72,18 +73,30 @@ router.post('/', (req, res) => {
   // Setting Schema so i can validate it
   const validating = userValidating(req.body);
   if(validating.error){
-    res.status(400).send(validating.error.details);
+    res.status(400).send(validating.error);
   }else {
     const user = new User({
       _id: new mongoose.Types.ObjectId(),
       name: req.body.name,
       age: req.body.age
     });
+
+    //  Checking the Mongoose Schema Validating
+    const v = user.validateSync();
+    // If the validateSync returns any string, that means that there is somthing wrong in saving the data
+    if(v)
+      res.status(400).send('There is somthing wrong');
+    //  IF the above if didn't wokred then the program can contiue to the below lines
     user.save()
     .then(result => {
+      //  IF the user saved in the database
+      res.send('You have added a new user');
       console.log(result);
     })
     .catch(err => {
+      //  IF the user hasn't saved in the database
+
+      res.status(401).send(err);
       console.log(err);
     });
   }
