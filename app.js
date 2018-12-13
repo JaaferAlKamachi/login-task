@@ -9,6 +9,7 @@ const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 const hello =  require('./hello');
 const usersRoutes = require('./routes/user');
+const postRoutes = require('./routes/posts');
 const mongoose = require('mongoose');
 
 //  Starting MongoDB connection
@@ -27,6 +28,7 @@ app.use(hello);
 app.use(express.static('public'));
 // Route MiddleWare for any route that start with (/api/user)
 app.use('/api/user', usersRoutes);
+app.use('/api/post', postRoutes);
 
 // Home Router
 app.get('/', (req, res) => {
