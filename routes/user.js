@@ -8,8 +8,10 @@
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require('../models/users');
+const bcrypt = require('bcrypt');
 
 
 
@@ -53,7 +55,55 @@ router.get('/', (req, res) => {
   }).catch(err => {
     res.status(400).send(err)
   })
-})
+});
+
+//  Regastiration a new user
+router.post('/register', (req, res) => {
+  bcrypt.genSalt(10).then(salt => {
+    bcrypt.hash(req.body.password, salt).then(hashed => {
+      const user = new User({
+        _id: new mongoose.Types.ObjectId(),
+        name: req.body.name,
+        age: req.body.age,
+        password: hashed,
+        email: req.body.email
+      });
+      user.save().then(result => {
+        const token = jwt.sign({id: result._id, exp: Date.now() + 1000 * 60 }, 'key')
+        res.header({'X-auth-token': token}).send();
+      })
+    })
+  });
+});
+
+
+router.post('checKlogin', (req, res) => {
+  //  check if there token is there
+
+  //  decode the token and chekc if it's validate
+
+  //  Get the payload from the jsonwebtoken
+
+  //  return('you are logged in')
+
+  //  you have to login
+});
+
+
+router.post('login', (req, res) => {
+
+  //  check if there is a user data (username & password) in the req body
+
+  //  chekc if there is such email get the user info
+
+  //  check if the password valid
+
+  //  create a new token and send it back to the user in the response header
+
+});
+
+
+
 
 // Getting information
 router.get('/:id', (req, res) => {

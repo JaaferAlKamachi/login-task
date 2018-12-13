@@ -30,6 +30,8 @@ const userSchema = mongoose.Schema({
       return this.age > 3 ; //  Hamdon has lost a 5000 IQD
     }
   },
+  password: String,
+  email: String
 
 });
 
