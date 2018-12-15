@@ -59,6 +59,7 @@ router.get('/', (req, res) => {
 
 //  Regastiration a new user
 router.post('/register', (req, res) => {
+  console.log('data', req.body)
   bcrypt.genSalt(10).then(salt => {
     bcrypt.hash(req.body.password, salt).then(hashed => {
       const user = new User({
@@ -77,16 +78,23 @@ router.post('/register', (req, res) => {
 });
 
 
-router.post('checKlogin', (req, res) => {
+router.post('/checKlogin', (req, res) => {
+  console.log(req.headers.x);
+  if(req.headers.x){
+    let d = jwt.decode(req.headers.x);
+    console.log(d);
+    
+    if(d.x > Date.now()){
+      console.log('active');
+      
+    }
+  }
   //  check if there token is there
-
   //  decode the token and chekc if it's validate
-
   //  Get the payload from the jsonwebtoken
-
   //  return('you are logged in')
-
   //  you have to login
+  res.send("ghj")
 });
 
 
